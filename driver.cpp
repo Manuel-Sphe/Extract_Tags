@@ -1,33 +1,55 @@
-#include <sstream>
 #include "Tag.h"
 int main(void){
     std::vector<std::string> lns;
-    MDNSPH007::readData("sample.txt",lns);
-    //std::cout<<"The size is :"<<lns.size()<<std::endl;
-    /*for(int i = 0;lns.size();i++){
-        std::cout<<lns[i] <<std::endl;
-    }*/
+    std::vector<std::string> results;
+    std::vector<MDNSPH007::TagStruct> tags;
 
-    std::string X  = "<h1>\nThe header\n</h1>"; 
+
+    MDNSPH007::readData("sample.txt",lns);
     std::string value ;
+    std::stringstream i_ss;
     // for every line in the lns vector
     for(std::size_t i = 0 ;i< lns.size();i++){
         // read the line string input
         std::istringstream iss(lns[i]);
-        // store the contents of the string to vector
+
         std::vector<std::string> myVec;
 
-        int j = 0 ;
         while(!iss.eof()){
             iss >> value;
             myVec.push_back(value);
-            //std::cout<<myVec[myVec.size()-1]<<std::endl;
+
+        }
+
+        if(MDNSPH007::validTag(myVec)){
+            results.push_back(lns[i]);
+        }
+
+        else{
+          if(MDNSPH007::isValid(lns[i])){
+              results.push_back(lns[i]);
+          }
+          else
+              i_ss<<lns[i];
+        }
+
     }
-
-    std::cout<<myVec[myVec.size()-1] << std::endl;
-
+      //std::cout <<i_ss.str();
+    for(std::size_t i =0;i<MDNSPH007::split(i_ss.str(),"><").size();++i){
+        results.push_back(MDNSPH007::split(i_ss.str(),"><")[i]);
     }
     
-    
+
+    for(std::size_t i =0;i<results.size();++i){
+        std::cout<< results[i]<<"\n";
+    }
+
+      i_ss.clear();
+      i_ss.str("");
+
+      /*for(std::size_t j = 0;j<results.size();j++){
+            std::cout << results[j]<< '\n';
+      }*/
+
     return 0;
 }
