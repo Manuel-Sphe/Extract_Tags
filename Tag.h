@@ -5,6 +5,10 @@
 #include <vector>
 #include<iostream>
 #include <sstream>
+#include <algorithm>
+
+#define n_pos std::string::npos
+#define str_vector std::vector<std::string>
 
 
 
@@ -26,7 +30,8 @@ namespace MDNSPH007{
     bool validTag(std::vector<std::string> &vec); // for checking the closing tags
     bool isValid(std::string &s);
     
-    std::vector<std::string> split(std::string s,std::string delimiter);
+    str_vector split(std::string s,std::string delimiter);
+    std::string getMessage(std::string s);
     
     //std::string getTag(std::vector<std::string> &str);
 }

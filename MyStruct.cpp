@@ -1,7 +1,7 @@
 
 #include "Tag.h"
 #include <fstream>
-bool MDNSPH007::readData(std::string fileName,std::vector<std::string> &vec){
+bool MDNSPH007::readData(std::string fileName,str_vector &vec){
 
     std::ifstream fileIn(fileName.c_str());
 
@@ -10,11 +10,14 @@ bool MDNSPH007::readData(std::string fileName,std::vector<std::string> &vec){
         return false;
     }
 
-    // else- go here
-
     std::string line;
 
     while(std::getline(fileIn,line)){
+
+      // line.erase( std::remove( line.begin(), line.end(), '\t'), line.end());
+
+       //std::replace (line.begin(), line.end(),'\t', ' ');
+
         vec.push_back(line);
     }
 
@@ -24,7 +27,7 @@ bool MDNSPH007::readData(std::string fileName,std::vector<std::string> &vec){
 
 }
 
-bool MDNSPH007::validTag(std::vector<std::string> &vec){
+bool MDNSPH007::validTag(str_vector &vec){
     //check if the opening tag and closing are on the same line
 
     std::size_t last = vec.size() - 1 ;
@@ -32,30 +35,41 @@ bool MDNSPH007::validTag(std::vector<std::string> &vec){
     std::size_t open = vec[0].find("<");
     std::size_t close = vec[last].find("</");
 
-    if(open != std::string::npos && close != std::string::npos && vec.size()>1)
+    // {<tag>man, is, happy</tag>}
+
+    if(open !=n_pos && close !=n_pos && vec.size()>1 )
         return true;
-    return false;
+    else if(vec.size() == 1 && MDNSPH007::isValid(vec[0]))
+        return true;
+    else
+        return false;
 }
+
 bool MDNSPH007::isValid(std::string &s){
-  std::size_t open = s.find("<");
-  std::size_t close = s.find("</");
-  std::size_t flag = s.find("><");
-
-  if(open != std::string::npos && close != std::string::npos && flag ==std::string::npos && close!=0){
-      return true;
-  }
-  else{
-      return false;
-  }
+    std::size_t open = s.find("<"),close = s.find("</"),flag = s.find("><");
+    std::size_t l_open = s.rfind("<"), l_close = s.find(">"); // the last < and >
+  
+    if(open != n_pos && close != n_pos && flag ==n_pos && close!=0 && open!=l_open && close != l_close){
+        return true;
+    }
+    else{
+        return false;
+    }
 }
 
-std::vector<std::string> MDNSPH007::split(std::string s,std::string delimiter){
+str_vector MDNSPH007::split(std::string s,std::string delimiter){
     std::size_t pos_start = 0, pos_end ,delimiter_len= delimiter.length();
-    std::vector<std::string> v;
+    str_vector v;
     std::string var;
     std::string open = "<";
 
-    while((pos_end=s.find(delimiter,pos_start)) != std::string::npos){
+    
+    if (s.find("><") == n_pos){
+        v.push_back("");
+        return v;
+    }
+       
+    while((pos_end=s.find(delimiter,pos_start)) != n_pos){
         var = s.substr(pos_start,pos_end - pos_start);
         pos_start = pos_end + delimiter_len;
         v.push_back(var);
@@ -70,5 +84,20 @@ std::vector<std::string> MDNSPH007::split(std::string s,std::string delimiter){
             v[i].append(">");
     }
     return v;
+
 }
 
+std::string MDNSPH007::getMessage(std::string s){
+    std::size_t f = s.find(">"),l = s.rfind("<"), len = s.length(), l_index = len -1 ;
+
+    if(f !=n_pos && l != n_pos){
+        f++; l--; // exluding < and >
+
+        s = s.substr(f,len - f - (l_index - l) );
+    }
+
+    // need to remove extra spaces and tabs
+       
+
+    return s;
+}
