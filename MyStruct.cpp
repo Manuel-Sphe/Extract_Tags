@@ -101,3 +101,12 @@ std::string MDNSPH007::getMessage(std::string s){
 
     return s;
 }
+
+std::string MDNSPH007::getName(std::string s){
+    std::size_t open = s.find("<"), close = s.find(">");// slash  = s.find("/");
+    std::string hold = "";
+    if(open !=n_pos && close != n_pos )
+        hold = s.substr(open+1,close-1);
+    return hold;
+}
+

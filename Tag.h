@@ -26,12 +26,13 @@ namespace MDNSPH007{
     //std::vector<TagStruct> tags;
 
     // fuction declarations
-    bool readData(std::string fileName, std::vector<std::string>  &vec);
-    bool validTag(std::vector<std::string> &vec); // for checking the closing tags
+    bool readData(std::string fileName, str_vector  &vec);
+    bool validTag(str_vector &vec); // for checking the closing tags
     bool isValid(std::string &s);
     
     str_vector split(std::string s,std::string delimiter);
     std::string getMessage(std::string s);
+    std::string getName(std::string s);
     
     //std::string getTag(std::vector<std::string> &str);
 }
