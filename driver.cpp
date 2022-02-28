@@ -1,55 +1,55 @@
 #include "Tag.h"
-int main(void){
-    std::vector<std::string> lns;
-    std::vector<std::string> results;
-    std::vector<MDNSPH007::TagStruct> tags;
 
-
-    MDNSPH007::readData("sample.txt",lns);
-    std::string value ;
-    std::stringstream i_ss;
-    // for every line in the lns vector
-    for(std::size_t i = 0 ;i< lns.size();i++){
-        // read the line string input
-        std::istringstream iss(lns[i]);
-
-        std::vector<std::string> myVec;
-
-        while(!iss.eof()){
-            iss >> value;
-            myVec.push_back(value);
-
-        }
-
-        if(MDNSPH007::validTag(myVec)){
-            results.push_back(lns[i]);
-            //std::cout<< lns[i]<<"\n";
-        }
-
-        else{
-            if(MDNSPH007::isValid(lns[i])){
-                results.push_back(lns[i]);
-            }   
-            else
-                i_ss<<lns[i];
-        }
-
-    }
-      //std::cout <<i_ss.str();
-    for(std::size_t i =0;i<MDNSPH007::split(i_ss.str(),"><").size();++i){
-        results.push_back(MDNSPH007::split(i_ss.str(),"><")[i]);
-    }
+int main(int argc,char* argv[]){
     
 
-    for(std::size_t i =0;i<results.size();++i){
-        std::cout<< MDNSPH007::getName(results[i])<<"\n";
-        //std::cout<<MDNSPH007::getMessage(results[i])<<"\n";
-    }
+    char user ;
+    std::cout << "Enter an option (r,p,d,l) or q to quit, and process return ..."<<std::endl;
+    MDNSPH007::tag_v  v ; 
+    
+    //Prompt the user 
+    std::cout<<"\'r\' (read and parse a specified input file)"<<'\n';
+    std::cout<<"\'p\' (print all tags - this will list all the tags in arbitrary order, to cout)"<<'\n';
+    std::cout<< "\'d\'(dump/write tags and data to a file called tag.txt see below)" <<'\n';
+    std::cout<< "\'l\'(list/print tag data for given tag to cout)" <<'\n';
+    std::cout<< "\'q\'(quit - terminate the input loop and exit the program)" <<'\n';
 
     
-    std::cout<< results.size()<<std::endl;
 
-    i_ss.clear();
-    i_ss.str("");
+    
+    for(;;){
+        
+        std::cin>> user;
+        if(user == 'q')
+            break;
+        switch(user){
+            case 'r':
+                if(argc == 1)
+                    v = MDNSPH007::Data("sample.txt");
+                else    
+                    v = MDNSPH007::Data(argv[1]);
+                break;
+            
+            case 'p':
+                MDNSPH007::printAll(v);
+                break;
+            
+            case 'd':
+                MDNSPH007::writeData(v);
+                break;
+            
+            case 'l':
+                std::string s;
+                std::cout<<"Enter the Tag name"<<std::endl;
+                std::cin>> s;
+                MDNSPH007::findTag(s,v);
+                break;
+    
+        }
+
+    }
+   
+
+
     return 0;
 }

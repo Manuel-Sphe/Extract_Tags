@@ -9,14 +9,9 @@ bool MDNSPH007::readData(std::string fileName,str_vector &vec){
         std::cerr<<"File Not Found !!!"<<std::endl;
         return false;
     }
-
     std::string line;
 
     while(std::getline(fileIn,line)){
-
-      // line.erase( std::remove( line.begin(), line.end(), '\t'), line.end());
-
-       //std::replace (line.begin(), line.end(),'\t', ' ');
 
         vec.push_back(line);
     }
@@ -94,11 +89,22 @@ std::string MDNSPH007::getMessage(std::string s){
         f++; l--; // exluding < and >
 
         s = s.substr(f,len - f - (l_index - l) );
+        //s.erase(std::remove(s.begin(), s.end(), '\t'), s.end());
+        
+        // replace tabs with spaces
+        for(int i = 0 ;i<s.length();++i){
+            if(s[i]=='\t')
+                s[i] =' ';
+        
+        }
+        
+        // remove extra spaces from adjecent spaces 
+        for(int i = 0 ;i<s.length()-1;++i){
+            if(s[i]==s[i+1])
+                s[i] ='\0';
+        
+        }
     }
-
-    // need to remove extra spaces and tabs
-       
-
     return s;
 }
 
@@ -108,5 +114,117 @@ std::string MDNSPH007::getName(std::string s){
     if(open !=n_pos && close != n_pos )
         hold = s.substr(open+1,close-1);
     return hold;
+}
+
+std::string MDNSPH007::find(str_vector vr, std::string s,int freq ){
+    std::string line = "";
+    for(std::size_t i = 0 ;i<vr.size(); i++){
+        if( s == MDNSPH007::getName(vr[i]) && freq>1){
+            
+            line = line + " : " + MDNSPH007::getMessage(vr[i]); 
+
+            line = line.substr(1,line.length()-1);
+        }
+        
+        else if(s==MDNSPH007::getName(vr[i]) && freq==1)
+            line = line+ MDNSPH007::getMessage(vr[i]);
+        
+       
+    }
+   
+    return line;
+}
+
+MDNSPH007::tag_v MDNSPH007::Data(std::string filename="sample.txt"){
+
+    std::vector<std::string> lns;
+    std::vector<std::string> results;
+    std::vector<MDNSPH007::TagStruct> tags;
+    std::vector<int> couts;
+    
+
+
+    MDNSPH007::readData(filename,lns);
+    std::string value ;
+    std::stringstream i_ss;
+    // for every line in the lns vector
+    for(std::size_t i = 0 ;i< lns.size();i++){
+        // read the line string input
+        std::istringstream iss(lns[i]);
+
+        std::vector<std::string> myVec;
+
+        while(!iss.eof()){
+            iss >> value;
+            myVec.push_back(value);
+
+        }
+
+        if(MDNSPH007::validTag(myVec)){
+            results.push_back(lns[i]);
+        }
+
+        else{
+            if(MDNSPH007::isValid(lns[i])){
+                results.push_back(lns[i]);
+            }   
+            else
+                i_ss<<lns[i];
+        }
+
+    }
+   
+    for(std::size_t i =0;i<MDNSPH007::split(i_ss.str(),"><").size();++i){
+        results.push_back(MDNSPH007::split(i_ss.str(),"><")[i]);
+    }
+
+    // stores the tags and their frequencies 
+    std::unordered_map<std::string,int> hash;
+    for(std::size_t i = 0 ;i<results.size();++i){
+        std::string text = MDNSPH007::getName(results[i]);
+        if(text!="")
+            hash[text]++;
+    }
+    
+    std::unordered_map<std::string, int>:: iterator p;
+
+    for (p = hash.begin(); p != hash.end(); p++){
+       
+        tags.push_back(MDNSPH007::TagStruct(p->first,MDNSPH007::find(results,p->first,p->second),p->second));
+    }
+
+    // clear the string stream 
+    i_ss.clear();
+    i_ss.str("");
+
+    return tags;
+}
+
+void MDNSPH007::printAll(MDNSPH007::tag_v tags){
+    //std::cout<<tags.size()<<'\n';
+    for(auto i :tags)
+        std::cout<<"\""<<i.tag<< "\"" <<", "<<i.pairs<<", "<<"\""<< i.text<<"\""<<std::endl;
+}
+
+void MDNSPH007::writeData(MDNSPH007::tag_v tags){
+
+    std::ofstream outfile("tags.txt");
+    for(auto i :tags){
+        outfile<<"\""<< i.tag<<"\""<<", "<<i.pairs<<", "<<"\""<<i.text <<"\"" <<std::endl;
+    }
+    outfile.close();
+
+}
+
+void MDNSPH007::findTag(std::string a,MDNSPH007::tag_v data){
+    for(auto i :data){
+        if(i.tag == a)
+            std::cout<<"\""<<i.tag<< "\"" <<", "<<i.pairs<<", "<<"\""<< i.text<<"\""<<std::endl;
+        else{
+            std::cout<< "No Tag information to displays"<<std::endl;
+            break;
+        }    
+            
+    }     
 }
 
