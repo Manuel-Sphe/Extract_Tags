@@ -4,7 +4,7 @@ int main(int argc,char* argv[]){
     
 
     char user ;
-    std::cout << "Enter an option (r,p,d,l) or q to quit, and process return ..."<<std::endl;
+    
     MDNSPH007::tag_v  v ; 
     
     //Prompt the user 
@@ -13,7 +13,7 @@ int main(int argc,char* argv[]){
     std::cout<< "\'d\'(dump/write tags and data to a file called tag.txt see below)" <<'\n';
     std::cout<< "\'l\'(list/print tag data for given tag to cout)" <<'\n';
     std::cout<< "\'q\'(quit - terminate the input loop and exit the program)" <<'\n';
-
+    std::cout << "Enter an option (r,p,d,l) or q to quit, and process return ..."<<std::endl;
     
 
     
