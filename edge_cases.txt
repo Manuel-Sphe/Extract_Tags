@@ -1,0 +1,16 @@
+<eq1>if a < b return c;</eq1>
+<eq2>if d > e return f;</eq2>
+<lines>
+
+
+lines
+
+
+</lines>
+<tabs>
+some
+	tabbed
+		content
+	inserted
+here
+</tabs>

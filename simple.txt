@@ -1,0 +1,3 @@
+<TXT>text</TXT>
+<TAG1>hello there old tag</TAG1>
+<TXT>and more text</TXT>

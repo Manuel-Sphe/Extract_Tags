@@ -1,0 +1,19 @@
+<head>
+<title>Long Example</title>
+</head>
+<h1>Heading</h1>
+<li>Item 1</li>
+<li>Item 2</li>
+<li>Item 3</li>
+<div>
+Lorem ipsum dolor sit amet
+</div>
+<h2>Subheading 1</h2>
+<div>
+consectetur adipiscing elit
+</div>
+<h2>Subheading 2</h2>
+<div>
+sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+</div>
+<footer>The end of the file</footer>
